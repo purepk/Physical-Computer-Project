@@ -83,7 +83,7 @@ void loop() {
       lcd.setCursor(3, 1);
       lcd.print("<Warning!>");
     } else if (rh >= 75 || temp >= 45) {
-      lcd.setCursor(2, 1);
+      lcd.setCursor(3, 1);
       lcd.print("<Critical>");
     } else if (rh <= 30) {
       lcd.setCursor(1, 1);
@@ -95,8 +95,6 @@ void loop() {
       lcd.print("<Normal>");
     }
 }
-
-  delay(2000);
 }
 
 double dewPoint(double T, double RH) {
