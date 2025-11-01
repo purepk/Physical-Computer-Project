@@ -27,4 +27,4 @@ Project's Title : Smart Humidity Guard ❄️☁️
 | 67070227 | นายณัฐพงศ์ พรหมแก้ว | หน้าที่ | ![image alt](https://github.com/purepk/Smart-Humidity-Guard/blob/9565ef4678a1cab7e45c0a9a36e1ddf068bb4a0a/pure.jpg) |
 | 67070251 | นายเปรม ศุภศรีสรรพ | หน้าที่ | ![image alt](https://github.com/purepk/Smart-Humidity-Guard/blob/9565ef4678a1cab7e45c0a9a36e1ddf068bb4a0a/Prem.jpg) |
 
-[//]: # (<img alt="SHG" height="150" src="asset/SHG.png" width="150"/>)
+[//]: # (<img height="150" src="asset/SHG.png"/>)
