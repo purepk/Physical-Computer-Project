@@ -18,7 +18,7 @@ Project's Title : Smart Humidity Guard ❄️☁️
 
 ## Project Poster
 ## รูป
-  ![SHG](assets/SHG.png)
+  ![SHG](asset/SHG.png)
 
 [//]: # (<img height="150" src="asset/SHG.png"/>)
 
