@@ -1,0 +1,108 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
+
+#define DHTPIN 2
+#define DHTTYPE DHT22
+
+// *** เปลี่ยน 0x27 เป็นค่าที่ได้จาก I2C Scanner ***
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+DHT_Unified dht(DHTPIN, DHTTYPE);
+uint32_t delayMS;
+
+byte o[8] = {
+  B00110,
+  B01001,
+  B01001,
+  B00110,
+  B00000,
+  B00000,
+  B00000,
+  B00000};
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+  
+  lcd.init();
+  lcd.backlight();
+  lcd.createChar(1, o);
+  lcd.setCursor(0, 0);
+  lcd.print("DHT22 Sensor");
+  lcd.setCursor(0, 1);
+  lcd.print("Starting...");
+  delay(2000);
+  lcd.clear();
+
+  sensor_t sensor;
+  dht.temperature().getSensor(&sensor);
+  delayMS = sensor.min_delay / 1000;
+
+  Serial.println("DHT22 with LCD Ready");
+}
+
+void loop() {
+  delay(delayMS);
+  
+  sensors_event_t event;
+  dht.temperature().getEvent(&event);
+  float temp = event.temperature;
+
+  dht.humidity().getEvent(&event);
+  float rh = event.relative_humidity;
+
+  double dp = dewPoint(temp, rh);
+  lcd.clear();
+
+  if (isnan(temp) || isnan(rh)) {
+    lcd.setCursor(2, 0);
+    lcd.print("Read Error!");
+    Serial.println("Error reading DHT22!");
+  } else {
+    // Serial Monitor
+    Serial.print("Temperature: ");
+    Serial.print(temp);
+    Serial.print("°C, Humidity: ");
+    Serial.print(rh);
+    Serial.println("%");
+
+    // LCD Display
+    lcd.setCursor(2, 0);
+    lcd.print(temp, 1);
+    lcd.write(byte(1));
+    lcd.print("C ");
+    lcd.setCursor(9, 0);
+    lcd.print(rh, 1);
+    lcd.print("%");
+    lcd.setCursor(0, 1);
+
+    if ((rh >= 60 && rh < 75) || (temp >= 35 && temp < 45)) {
+      lcd.setCursor(3, 1);
+      lcd.print("<Warning!>");
+    } else if (rh >= 75 || temp >= 45) {
+      lcd.setCursor(2, 1);
+      lcd.print("<Critical>");
+    } else if (rh <= 30) {
+      lcd.setCursor(1, 1);
+      lcd.print("<Low Humidity>");
+    } else if (dp >= temp-2) {
+      lcd.print("<Condensation>");
+    } else {
+      lcd.setCursor(4, 1);
+      lcd.print("<Normal>");
+    }
+}
+
+  delay(2000);
+}
+
+double dewPoint(double T, double RH) {
+  const double a = 17.27;
+  const double b = 237.7; // °C
+  double alpha = (a * T) / (b + T) + log(RH / 100.0);
+  double Td = (b * alpha) / (a - alpha);
+  return Td;
+}
